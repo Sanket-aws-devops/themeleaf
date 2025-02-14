@@ -16,7 +16,7 @@ pipeline {
 
         stage('Build') {
             steps {
-                dir('thymeleafExample') { // Change this to the subdirectory containing pom.xml
+                dir('thymeleafExample') { // Navigate to the directory containing pom.xml
                     sh 'mvn -B -DskipTests clean package'
                 }
             }
@@ -24,13 +24,13 @@ pipeline {
 
         stage('Test') {
             steps {
-                dir('thymeleafExample') { // Change this as needed
+                dir('thymeleafExample') { // Navigate to the directory containing pom.xml
                     sh 'mvn test'
                 }
             }
             post {
                 always {
-                    junit 'target/surefire-reports/*.xml'
+                    junit 'thymeleafExample/target/surefire-reports/*.xml' // Adjust path if necessary
                 }
             }
         }
