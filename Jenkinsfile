@@ -17,7 +17,7 @@ pipeline {
         stage('Build') {
             steps {
                 dir('thymeleafExample') { // Navigate to the directory containing pom.xml
-                    sh 'mvn -B -DskipTests clean package'
+                    sh 'mvn -B -DskipTests clean install'
                 }
             }
         }
