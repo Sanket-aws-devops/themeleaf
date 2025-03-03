@@ -37,6 +37,7 @@ jobs:
           scp /github/workspace/thymeleafExample/target/work-0.0.1-SNAPSHOT.jar ubuntu@${{ secrets.EC2_HOST }}:/home/ubuntu/
           # Run the new instance
           ssh ubuntu@${{ secrets.EC2_HOST }} "nohup java -jar /home/ubuntu/work-0.0.1-SNAPSHOT.jar &"
-        timeout: 60m  # Increased timeout
-        command_timeout: 15m  # Increased command timeout
-        capture_stdout: true  # Capture the stdout logs for debugging
+        timeout: 60m  # Increase the timeout if needed
+        command_timeout: 15m  # Increase the command timeout if needed
+        capture_stdout: true  # Optionally capture stdout for debugging
+
