@@ -30,3 +30,17 @@ jobs:
         java -jar target/work-0.0.1-SNAPSHOT.jar &
         sleep 10 # Give the app some time to start
         curl http://localhost:8086 # Replace with your app's URL
+        
+    - name: Deploy to EC2
+      uses: appleboy/ssh-action@master
+      with:
+        host: ${{ secrets.EC2_HOST }}
+        username: ${{ secrets.EC2_USERNAME }}
+        key: ${{ secrets.EC2_KEY }}
+        script: |
+          # Stop any existing instance
+          pkill -f your-app.jar
+          # Copy the new jar file
+          scp /github/workspace/target/your-app.jar ubuntu@${EC2_HOST}:/home/ubuntu/
+          # Run the new instance
+          ssh ubuntu@${EC2_HOST} "nohup java -jar /home/ubuntu/your-app.jar &"
