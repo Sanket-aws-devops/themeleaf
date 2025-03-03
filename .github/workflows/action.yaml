@@ -41,6 +41,6 @@ jobs:
           # Stop any existing instance
           pkill -f your-app.jar
           # Copy the new jar file
-          scp /github/workspace/target/your-app.jar ubuntu@${EC2_HOST}:/home/ubuntu/
+          scp /github/workspace/target/work-0.0.1-SNAPSHOT.jar ubuntu@${EC2_HOST}:/home/ubuntu/
           # Run the new instance
-          ssh ubuntu@${EC2_HOST} "nohup java -jar /home/ubuntu/your-app.jar &"
+          ssh ubuntu@${EC2_HOST} "nohup java -jar /home/ubuntu/work-0.0.1-SNAPSHOT.jar &"
