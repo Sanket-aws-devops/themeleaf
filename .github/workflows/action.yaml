@@ -30,7 +30,7 @@ jobs:
         SOURCE: "./thymeleafExample/target"
         REMOTE_HOST: "54.175.41.89"
         REMOTE_USER: "ubuntu"
-        TARGET: "/home/ubuntu/"
+        TARGET: "/home/ubuntu/target"
         script: |
           # Stop any existing instance
           pkill -f work-0.0.1-SNAPSHOT.jar
