@@ -23,19 +23,16 @@ jobs:
         cd thymeleafExample
         mvn clean install
 
-    - name: Deploy to my EC2 instance
-      uses: easingthemes/ssh-deploy@v2.1.5
-      env:
-        SSH_PRIVATE_KEY: ${{ secrets.EC2_KEY }}
-        SOURCE: "./thymeleafExample/target"
-        REMOTE_HOST: "54.175.41.89"
-        REMOTE_USER: "ubuntu"
-        TARGET: "/home/ubuntu/target"
+    - name: Deploy and Run on EC2
+      uses: appleboy/ssh-action@master
+      with:
+        host: 54.175.41.89
+        username: ubuntu
+        key: ${{ secrets.EC2_KEY }}
         script: |
           # Stop any existing instance
           pkill -f work-0.0.1-SNAPSHOT.jar
+          # Copy the new jar file
+          scp /github/workspace/thymeleafExample/target/work-0.0.1-SNAPSHOT.jar ubuntu@54.175.41.89:/home/ubuntu/
           # Run the new instance
-          sudo su
-          cd /home/ubuntu/target
-          sudo chmod +x work-0.0.1-SNAPSHOT.jar
-          nohup java -jar work-0.0.1-SNAPSHOT.jar > /home/ubuntu/app.log 2>&1 &
+          ssh ubuntu@54.175.41.89 "nohup java -jar /home/ubuntu/work-0.0.1-SNAPSHOT.jar &"
