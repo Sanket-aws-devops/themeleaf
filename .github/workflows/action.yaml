@@ -28,7 +28,7 @@ jobs:
       env:
         SSH_PRIVATE_KEY: ${{ secrets.EC2_KEY }}
         SOURCE: "./thymeleafExample/target"
-        REMOTE_HOST: "44.210.136.62"
+        REMOTE_HOST: "54.175.41.89"
         REMOTE_USER: "ubuntu"
         TARGET: "/home/ubuntu/"
         script: |
