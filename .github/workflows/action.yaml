@@ -35,4 +35,6 @@ jobs:
           # Stop any existing instance
           pkill -f work-0.0.1-SNAPSHOT.jar
           # Run the new instance
+          sudo su
+          sudo chmod +x /home/ubuntu/target/work-0.0.1-SNAPSHOT.jar
           nohup java -jar work-0.0.1-SNAPSHOT.jar &
