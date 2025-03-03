@@ -18,18 +18,22 @@ jobs:
         java-version: '8'
 
     - name: Build with Maven
-      run: mvn -f /thymeleafExample/pom.xml clean install
+      run: |
+        cd thymeleafexample
+        mvn clean install
 
     - name: Run tests
       run: |
+        cd thymeleafexample
         mvn test
 
     - name: Run the application
       run: |
+        cd thymeleafexample
         java -jar target/work-0.0.1-SNAPSHOT.jar &
         sleep 10 # Give the app some time to start
         curl http://localhost:8086 # Replace with your app's URL
-        
+
     - name: Deploy to EC2
       uses: appleboy/ssh-action@master
       with:
@@ -38,8 +42,8 @@ jobs:
         key: ${{ secrets.EC2_KEY }}
         script: |
           # Stop any existing instance
-          pkill -f your-app.jar
+          pkill -f work-0.0.1-SNAPSHOT.jar
           # Copy the new jar file
-          scp /github/workspace/target/work-0.0.1-SNAPSHOT.jar ubuntu@${EC2_HOST}:/home/ubuntu/
+          scp /github/workspace/thymeleafexample/target/work-0.0.1-SNAPSHOT.jar ubuntu@${EC2_HOST}:/home/ubuntu/
           # Run the new instance
           ssh ubuntu@${EC2_HOST} "nohup java -jar /home/ubuntu/work-0.0.1-SNAPSHOT.jar &"
