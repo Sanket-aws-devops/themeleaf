@@ -1,0 +1,37 @@
+pipeline {
+    agent any
+
+    environment {
+        S3_BUCKET = 'jenkins-test-sanket'
+        ARTIFACT_PATH = 'work-0.0.1-SNAPSHOT.jar'
+        LOCAL_ARTIFACT = 'work-0.0.1-SNAPSHOT.jar'
+        AWS_DEFAULT_REGION = 'us-east-1'
+        EC2_HOST = 'ubuntu@ec2-34-234-73-226.compute-1.amazonaws.com'
+    }
+
+    stages {
+        stage('Download from S3') {
+            steps {
+                withCredentials([[
+                    $class: 'AmazonWebServicesCredentialsBinding',
+                    credentialsId: 'jenkins-aws-credentials'
+                ]]) {
+                    sh """
+                        aws s3 cp s3://${S3_BUCKET}/${ARTIFACT_PATH} ${LOCAL_ARTIFACT} --region ${AWS_DEFAULT_REGION}
+                    """
+                }
+            }
+        }
+
+        stage('Copy to EC2 and Run') {
+            steps {
+                sshagent(['ec2-ssh-key']) {
+                    sh """
+                        scp -o StrictHostKeyChecking=no ${LOCAL_ARTIFACT} ${EC2_HOST}:/home/ubuntu/
+                        ssh -o StrictHostKeyChecking=no ${EC2_HOST} 'nohup java -jar /home/ubuntu/${LOCAL_ARTIFACT} > app.log 2>&1 &'
+                    """
+                }
+            }
+        }
+    }
+}
