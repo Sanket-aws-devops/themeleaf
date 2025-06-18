@@ -11,7 +11,7 @@ pipeline {
         ARTIFACT_PATH = 'thymeleafExample/target/*.jar'
         AWS_DEFAULT_REGION = 'us-east-1'
         ECR_ACCOUNT = '633025986259' // Replace with your AWS account ID
-        ECR_REPO = 'leaf' // Replace with your ECR repo name
+        ECR_REPO = 'jenkins' // Replace with your ECR repo name
         ECR_URL = "${ECR_ACCOUNT}.dkr.ecr.${AWS_DEFAULT_REGION}.amazonaws.com"
         IMAGE_TAG = "${env.BUILD_NUMBER}"
         DOCKER_IMAGE = "${ECR_URL}/${ECR_REPO}:${IMAGE_TAG}"
