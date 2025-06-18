@@ -21,3 +21,15 @@ pipeline {
                         sh """
                             ssh -o StrictHostKeyChecking=no ${EC2_USER}@${EC2_HOST} '
                                 aws ecr get-login-password --region ${AWS_REGION} | docker login --username AWS --password-stdin ${ECR_URL} &&
+                                docker pull ${ECR_URL}:${IMAGE_TAG} &&
+                                docker stop thmeleaf || true &&
+                                docker rm thmeleaf || true &&
+                                sudo docker run -itd --name thmeleaf -p 8086:8086 ${ECR_URL}:${IMAGE_TAG}
+                            '
+                        """
+                    }
+                }
+            }
+        }
+    }
+}
