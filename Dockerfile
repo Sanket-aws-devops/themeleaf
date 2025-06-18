@@ -1,6 +1,6 @@
 # Stage 1: Build the JAR
 FROM maven:3.8.1-openjdk-8 AS build
-WORKDIR /app
+WORKDIR /app/thymeleafExample
 COPY . .
 RUN ls
 RUN mvn clean package -DskipTests
