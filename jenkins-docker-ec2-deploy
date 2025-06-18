@@ -3,9 +3,9 @@ pipeline {
 
     environment {
         ECR_URL = '633025986259.dkr.ecr.us-east-1.amazonaws.com/jenkinsmaster'
-        IMAGE_TAG = '16' // Change if you want to deploy a specific tag
+        IMAGE_TAG = '17' // Change if you want to deploy a specific tag
         EC2_USER = 'ubuntu' // Change if your EC2 uses a different user
-        EC2_HOST = '@ec2-34-207-219-220.compute-1.amazonaws.com' // Replace with your EC2 instance's public IP or DNS
+        EC2_HOST = 'ec2-34-207-219-220.compute-1.amazonaws.com' // Replace with your EC2 instance's public IP or DNS
         SSH_KEY_ID = 'ec2-ssh-credentials-id' // Jenkins SSH credentials ID for EC2
         AWS_REGION = 'us-east-1'
     }
