@@ -1,0 +1,82 @@
+pipeline {
+    agent any
+
+    tools {
+        maven 'MAVEN'
+        jdk 'JAVA'
+    }
+
+    environment {
+        S3_BUCKET = 'jenkins-test-sanket'
+        ARTIFACT_PATH = 'thymeleafExample/target/*.jar'
+        AWS_DEFAULT_REGION = 'us-east-1'
+        ECR_ACCOUNT = '633025986259' // Replace with your AWS account ID
+        ECR_REPO = 'jenk-docker' // Replace with your ECR repo name
+        ECR_URL = "${ECR_ACCOUNT}.dkr.ecr.${AWS_DEFAULT_REGION}.amazonaws.com"
+        IMAGE_TAG = "${env.BUILD_NUMBER}"
+        DOCKER_IMAGE = "${ECR_URL}/${ECR_REPO}:${IMAGE_TAG}"
+    }
+
+    stages {
+        stage('Checkout') {
+            steps {
+                checkout scm
+            }
+        }
+
+        stage('Build') {
+            steps {
+                dir('thymeleafExample') {
+                    sh 'mvn -B -DskipTests clean install'
+                }
+            }
+        }
+
+        stage('Test') {
+            steps {
+                dir('thymeleafExample') {
+                    sh 'mvn test'
+                }
+            }
+            post {
+                always {
+                    junit 'thymeleafExample/target/surefire-reports/*.xml'
+                }
+            }
+        }
+
+        stage('Build Docker Image') {
+            steps {
+                script {
+                    sh """
+                        aws ecr get-login-password --region ${AWS_DEFAULT_REGION} | docker login --username AWS --password-stdin ${ECR_URL}
+                        docker build -t ${DOCKER_IMAGE} -f thymeleafExample/Dockerfile thymeleafExample
+                    """
+                }
+            }
+        }
+
+        stage('Push Docker Image to ECR') {
+            steps {
+                script {
+                    sh """
+                        docker push ${DOCKER_IMAGE}
+                    """
+                }
+            }
+        }
+
+        stage('Deliver Artifact to S3') {
+            steps {
+                withCredentials([[
+                    $class: 'AmazonWebServicesCredentialsBinding',
+                    credentialsId: 'jenkins-aws-credentials'
+                ]]) {
+                    sh """
+                        aws s3 cp ${ARTIFACT_PATH} s3://${S3_BUCKET}/ --region ${AWS_DEFAULT_REGION}
+                    """
+                }
+            }
+        }
+    }
+}
