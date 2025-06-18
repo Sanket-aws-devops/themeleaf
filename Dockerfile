@@ -1,5 +1,5 @@
 # Stage 1: Build the JAR
-FROM maven:3.8.8-openjdk-11 AS build
+FROM maven:3.8.1-openjdk-8 AS build
 WORKDIR /app
 COPY . .
 RUN mvn clean package -DskipTests
